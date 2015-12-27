@@ -65,7 +65,18 @@ function getStarCount(nintendoId, callback) {
 	request.addEventListener('load', function(event) {
 		try
 		{
-			var stars = parseInt(Array.prototype.map.call(request.responseXML.body.getElementsByClassName('star')[0].getElementsByClassName('typography'), function(n) { return n.className.substr(n.className.indexOf('-') + 1) }).join(''),10)
+			// Get the '.star .typography' elements
+			var starCountEls = request.responseXML.body.getElementsByClassName('star')[0].getElementsByClassName('typography');
+
+			// Each element has a 'typography-1' className (where 1 is the number)
+			// Use Array.map to get the numeric part of the className of each element
+			var starCountStr = Array.prototype.map.call(starCountEls, function(el) {
+				var className = el.className;
+				return className.substr(className.indexOf('-') + 1);
+			}).join('');
+
+			var stars = parseInt(starCountStr, 10);
+
 			callback(stars);
 		}
 		catch(e)
